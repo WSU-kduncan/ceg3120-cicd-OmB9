@@ -182,3 +182,12 @@ Use the following command to push your image to DockerHub:
 - [How to create a Docker Container](https://www.youtube.com/watch?v=SnSH8Ht3MIc)
 - [Further reasrch into Angular CLI](https://v17.angular.io/cli/build)
 - [NGINX Beginner's Guide](https://nginx.org/en/docs/beginners_guide.html)
+
+
+## Part 2
+
+This is to test CI workflow
+
+### Refrences
+
+- [How to create secrets in GitHub Repo](https://www.youtube.com/watch?v=LRAnMQI0Nlo)
