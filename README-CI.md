@@ -1,8 +1,32 @@
 # Project 4 - CI
 
-## Project Description
+## Continuous Integration Project Overview
 
-This project goes through the containerization process for a Angular application using Docker, as part of a CI pipeline. It includes a multistage Dockerfile to build and server the app with NGINX, with detailed instructions for setting up Docker, running container, and pushing the image to a public DockerHub repository.
+### Goal of This Project
+
+The goal is to automate the process of builing and deploying a Docker image of an Angular app to DockerHub whenever changes are pushed to the main branch of this repository.
+
+### Tools Used in This Project
+
+- Docker: To containerize the Angular app.
+- DockerHub: Serves as the registry for storing and sharing Docker images.
+- NGINX: Web server used within the Docker container which serves the Angular app.
+- GitHub Actions: Automation tool for CI pipeline.
+- Mermaid: Digramming tool
+
+### Diagram
+
+``` mermaid
+graph TD
+    A[Developer pushes code to GitHub] --> B{GitHub Actions triggered on push to main}
+    B --> C[Checkout code]
+    C --> D[Login to DockerHub]
+    D --> E[Build Docker image]
+    E --> F[Push Docker image to DockerHub]
+    F --> G[New image available on DockerHub]
+```
+
+## Part 1 - Docker-ize it
 
 ## Docker Setup
 
@@ -72,7 +96,7 @@ Within the `nginx:alpine` image it is set to `["nginx", "-g", "daemon off;"]` wh
 2. Check if the Angular files are in the specified path:
 `ls /usr/share/nginx/html`
 
-3. Verify NGINX is running: 
+3. Verify NGINX is running:
    - Run `ps aux`
    - Then look for the NGINX process
 
@@ -114,6 +138,7 @@ Within the `nginx:alpine` image it is set to `["nginx", "-g", "daemon off;"]` wh
 ### Running a container that serves Angular app from image built by the Dockerfile
 
 Run the following command to run the container from the image built eariler: `docker run -d -p 8080:80 --name angular-app <DOCKERHUBUSERNAME>/<LASTNAME>-ceg3120:latest`
+
 - `-d`: Runs in detached mode.
 - `p`: Maps port `8080` on the host side and `80` on the container's side.
 - `--name angular-app`: Just a name for the conatiner to refrence easily.
@@ -176,19 +201,107 @@ Use the following command to push your image to DockerHub:
 
 [omb9/bhavsar-ceg3120](https://hub.docker.com/r/omb9/bhavsar-ceg3120)
 
+___
+
+## Part 2 - GitHub Actions and DockerHub
+
+### Configuring GitHub Repository Secrets
+
+#### Create DockerHub PAT
+
+The first thing to do in order to setup secrets is to have something to keep secret. Below is a walkthrough of how to generate a Personal Access Token (PAT) for a Docker account.
+
+1. Login to DockerHub.
+2. Goto your account settings
+3. Navigate to Security > Personal Access Tokens.
+4. Click "Generate new token".
+5. Enter a description.
+6. Set the scope to Read, Write.
+7. Copy the generated token and store it securely.
+
+#### Setting Up Repoistory Secrets
+
+Now that the PAT has been created it needs to be stored and reffered to securly. Below is a walkthrough of how to create GitHub repoistory secrets.
+
+1. Login to GitHub.
+2. Navigate to your repoistory.
+3. Click "Settings", located on the top menu.
+4. Click "Secrets and variables".
+5. From the dropdown select "Actions".
+6. Click "New repository secret".
+7. Copy the PAT from DockerHub to "Secret*".
+8. In the "Name*" field the PAT can be named "DOCKER_TOKEN".
+9. Create one more repoistory secret for your Docker username.
+10. In the "Name*" field the username can be named "DOCKER_USERNAME".
+11. Enter your docker username in the "Secret*" field in all lowercase characters.
+
+#### Secrets Utilized For This Project
+
+There were only two secrets used for this project:
+
+- DOCKER_USERNAME - Is your DockerHub username, so GitHub can authenticate to DokcerHub behalf of you.
+- DOCKER_TOKEN - Is your PAT, so GitHub can update the DockerHub repository.
+
+### CI with GitHub Actions
+
+#### Workflow Summary
+
+- Name: CI
+- Trigger: Pushes to the main branch
+- Job: Build & Push a Docker image to DockerHub
+
+#### Explanation of Workflow Steps
+
+1. Checkout code
+   - `actions/checkout@v3` action is to check out the repository code, which makes it available to the workflow.
+2. Login to DockerHub
+   - `docker/login-action@v3` action is to login to DockerHub.
+   - Credentials are provided by the GitHub secrets.
+3. Build & Push Docker Image
+   - `docker/build-push-action@v5` action is to build a Docker image from the current directory and push it to DockerHub.
+   - The image is also tagged with [UserName]/[LastName]-ceg3120:latest
+
+#### Values to Update for Different Repositories
+
+If this workflow is to be used in a different repository, the following values need to be updated:
+
+1. DcokerHub Credentials:
+   - Make sure the `DOCKER_USERNAME` & `DOCKER_TOKEN` secrets are updated to reflect new repository settings
+   - The account that will be hosting the docker image on DockerHub needs to have its username and token filed in.
+2. Image Tag:
+   - The current tag is `${{ secrets.DOCKER_USERNAME }}/bhavsar-ceg3120:latest`
+   - Update `bhavsar-ceg3120:latest` to match your last name or anything that is appropriate.
+
+#### Link to Workflow
+
+- [CI.yml](https://github.com/WSU-kduncan/ceg3120-cicd-OmB9/blob/main/.github/workflows/ci.yml)
+
+### Testing & Validation
+
+#### Testing
+
+- Trigger the workflow by pushing to main or manually with workflow_dispathch.
+- Verify the image exists on DockerHub with correct tag and timestamp.
+
+#### Validation
+
+- Pull image from DockerHub.
+- Run a container.
+- Check logs and test functionality.
+
 ## Refrences
 
 - [Installing Docker Desktop](https://www.youtube.com/watch?v=rATNU0Fr8zs)
+- [Course Notes](https://github.com/pattonsgirl/CEG3120/blob/main/CourseNotes/containers.md)
 - [How to create a Docker Container](https://www.youtube.com/watch?v=SnSH8Ht3MIc)
 - [Further reasrch into Angular CLI](https://v17.angular.io/cli/build)
 - [NGINX Beginner's Guide](https://nginx.org/en/docs/beginners_guide.html)
-
-
-## Part 2
-
-This is to test CI workflow
-testing one more time
-
-### Refrences
-
 - [How to create secrets in GitHub Repo](https://www.youtube.com/watch?v=LRAnMQI0Nlo)
+- [Creating a PAT for DockerHub](https://docs.docker.com/security/for-developers/access-tokens/)
+- Generative AI: `How to configure a GitHub action to build and push a Docker image`
+- [GitHub Actions Introduction](https://docs.docker.com/guides/gha/)
+- [Docker Build Push action](https://github.com/docker/build-push-action#usage)
+- [Mermaid in Markdown](https://www.youtube.com/watch?v=qGsQolMh9zE)
+- [Mermaid getting started](https://mermaid.js.org/intro/getting-started.html)
+- [Mermaid VS Code extension](https://marketplace.visualstudio.com/items/?itemName=bierner.markdown-mermaid)
+  
