@@ -112,6 +112,8 @@ Within the `nginx:alpine` image it is set to `["nginx", "-g", "daemon off;"]` wh
 
 ### Summary
 
+To clarify I did not pre-build the application locally and copy the files manually. The build process occurs within the Docker container during the multi-stage build.
+
 #### Stage 1 (Build)
 
 - Base Image: `FROM node:lts-alpine AS build` - Uses lightweight Node.js image for builing stage.
@@ -294,6 +296,8 @@ If this workflow is to be used in a different repository, the following values n
 - [Installing Docker Desktop](https://www.youtube.com/watch?v=rATNU0Fr8zs)
 - [Course Notes](https://github.com/pattonsgirl/CEG3120/blob/main/CourseNotes/containers.md)
 - [How to create a Docker Container](https://www.youtube.com/watch?v=SnSH8Ht3MIc)
+- Generative AI: `How to create a DockerFile that serves a angular application. Please include best practices and go over all steps.`
+- [Docker Multi-Stage Builds](https://docs.docker.com/build/building/multi-stage/)
 - [Further reasrch into Angular CLI](https://v17.angular.io/cli/build)
 - [NGINX Beginner's Guide](https://nginx.org/en/docs/beginners_guide.html)
 - [How to create secrets in GitHub Repo](https://www.youtube.com/watch?v=LRAnMQI0Nlo)
