@@ -6,7 +6,7 @@
       "trigger-rule": {
         "match": {
           "type": "value",
-          "value": "mysecret",
+          "value": "SuPeRsEcReTkEyToDePlOyDoCkErImAgEtOeC2TrUsTmEiTsSuPeRsEcUrE123!$$",
           "parameter": {
             "source": "url",
             "name": "secret"
