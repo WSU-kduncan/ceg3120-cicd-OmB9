@@ -1,0 +1,11 @@
+[Unit]
+Description=Webhook Service
+After=network.target
+
+[Service]
+User=ubuntu
+ExecStart=/usr/local/bin/webhook -hooks /home/ubuntu/deployment/hooks.json -verbose -port 9000
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

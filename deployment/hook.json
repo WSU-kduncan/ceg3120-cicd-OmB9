@@ -1,0 +1,17 @@
+[
+    {
+      "id": "deploy",
+      "execute-command": "/home/ubuntu/deployment/script.sh",
+      "command-working-directory": "/home/ubuntu/deployment",
+      "trigger-rule": {
+        "match": {
+          "type": "value",
+          "value": "mysecret",
+          "parameter": {
+            "source": "url",
+            "name": "secret"
+          }
+        }
+      }
+    }
+  ]
