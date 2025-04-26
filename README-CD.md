@@ -2,7 +2,33 @@
 
 ## Project Overview
 
-Coming soon<sup>TM</sup>
+### Goal of this Project
+
+The goal of this project is to automate the deployment of an Angular application running in a Docker container on an EC2 instance. When a developer pushes new code to the GitHub repository, it triggers a series of automated steps that build a new Docker image, push it to DockerHub, and update the running container on the EC2 instance via a webhook. This makes sure the application is always up-to-date with the latest changes.
+
+### Tools Utilized
+
+- GitHub: Hosts the repository and triggers the CI/CD pipeline.
+- GitHub Actions: Automates the build and push of the Docker image to DockerHub.
+- Docker: Containerizes the Angular application for consistent deployment.
+- DockerHub: Stores and distributes the Docker image.
+- EC2: Runs the containerized application.
+- adnanh/webhook: Listens for payloads from DockerHub to trigger deployment updates.
+- Nginx: Serves the Angular application inside the container.
+
+### Diagram of Project
+
+```mermaid
+graph TD
+    A[Developer pushes code to GitHub] --> B{GitHub Actions builds Docker image}
+    B --> C[Push image to DockerHub]
+    C --> D[DockerHub sends webhook to EC2]
+    D --> E[Webhook triggers script on EC2]
+    E --> F[Script pulls new image]
+    F --> G[Script stops and removes old container]
+    G --> H[Script runs new container]
+    H --> I[New container serves updated application]
+```
 
 ## Part 1 - Semantic Versioning
 
@@ -470,7 +496,7 @@ The webhook.service file configures the webhook listener as a systemd service fo
 
 1. Place the service file in /etc/systemd/system/webhook.service
 2. Enable and start it by running:
-    
+
     ```bash
     sudo systemctl enable webhook
     sudo systemctl start webhook
@@ -501,3 +527,7 @@ Review logs for payload receipt and script execution.
 - AI prompt: Best practices to setup adnanah's webhook
 - AI prompt: Make a configuration file that is a webhook definition. The hook definition should: Trigger your bash script to run when a payload is received & validate that the payload came from a trusted source via a shared secret or by validating payload is from DockerHub or GitHub.
 - AI prompt: Best practices for setting up adnanh's webhook as a service.
+- [Docker Webhooks](https://docs.docker.com/docker-hub/repos/manage/webhooks/)
+- [Mermaid in Markdown](https://www.youtube.com/watch?v=qGsQolMh9zE)
+- [Mermaid getting started](https://mermaid.js.org/intro/getting-started.html)
+- [Mermaid VS Code extension](https://marketplace.visualstudio.com/items/?itemName=bierner.markdown-mermaid)
